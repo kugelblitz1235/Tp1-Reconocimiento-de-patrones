@@ -1,0 +1,1358 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Informe1}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    
+
+    \hypertarget{introducciuxf3n}{%
+\section{\texorpdfstring{\textbf{Introducción}}{Introducción}}\label{introducciuxf3n}}
+
+    La regresión lineal es util para modelar relaciones entre la variable
+que se desea predecir y el resto de covariables. Los modelos que emplean
+parámetros de regularización atenúan problemas relacionados con la
+presencia de predictores correlacionados, riesgo de \textit{overfitting}
+e inclusion de predictores poco relevantes, mediante la penalizacion de
+los coeficientes del modelo (w), como se muestra en la ecuación (1).
+Tiene el efecto de reducir de forma proporcional el valor de todos los
+coeficientes del modelo pero sin que estos lleguen a cero. El grado de
+penalización está controlado por el hiperparámetro \(\lambda\). Cuando
+\(\lambda = 0\), la penalización es nula y el resultado es equivalente
+al de un modelo lineal por mínimos cuadrados ordinarios (OLS). A medida
+que \(\lambda\) aumenta, mayor es la penalización y menor el valor de
+los predictores.
+
+\begin{align}
+    \sum^N_{n=1}(t_n - \boldsymbol{w^t\phi}(x_n))^2 + \frac{\lambda}{2} \sum^M_{j=1} \lvert w_j \rvert ^q = \text{suma residuos cuadrados} + \frac{\lambda}{2} \sum^M_{j=1}\lvert w_j \rvert^q
+    \label{eq1}
+\end{align} Las estrategias más conocidas que incorporan este tipo de
+penalización son:
+
+\hypertarget{ridge}{%
+\subsection{Ridge}\label{ridge}}
+
+La regularización Ridge penaliza la suma de los coeficientes elevados al
+cuadrado \((||w||^2_2 = \sum_{j=1} ^M w^2_j)\). Para el caso de Ridge el
+valor de \(q\) en la ecuación (1) es dos.
+
+\hypertarget{lasso}{%
+\subsection{LASSO}\label{lasso}}
+
+La regularización Lasso penaliza la suma de los valores absolutos de los
+coeficientes de regresión
+\((||w||_1 = \sum_{j=1} ^M \lvert w_j \rvert)\). Para el caso de Lasso
+el valor de \(q\) en la ecuación (1) es uno.
+
+\hypertarget{elastic-net}{%
+\subsection{Elastic net}\label{elastic-net}}
+
+Elastic net incluye una regularización que combina la penalización de
+norma 1 y norma 2 a través del parámetro \(r\), el cual controla el
+grado en que influye cada una de las penalizaciones. Su valor está
+comprendido entre 0 y 1. Cuando r=0, se aplica Ridge y cuando r=1 se
+aplica LASSO. La combinación de ambas penalizaciones suele dar lugar a
+buenos resultados. Una estrategia frecuentemente utilizada es asignarle
+casi todo el peso a la penalización con norma 1 (r muy próximo a 1) para
+conseguir seleccionar predictores y un poco a la penalización con norma
+2 para dar cierta estabilidad en el caso de que algunos predictores
+estén correlacionados.
+\[(\lambda(r||w||_1 + \frac{1}{2}(1- r)||w||^2_2))\]
+
+\[1 / (2 * n_{samples}) * ||y - Xw||^2_2 + \alpha * l_{1_{ratio}} * ||w||_1 + 0.5 * \alpha * (1 - l_{1_{ratio}}) * ||w||^2_2\]
+
+\hypertarget{objetivo}{%
+\subsection{Objetivo}\label{objetivo}}
+
+En este trabajo se empleará la base de datos de
+\textit{California Housing Prices}, que corresponde a un censo del año
+1990 en la provincia de California, Estados Unidos. Cada entrada es un
+distrito caracterizado por diez variables. El objetivo de este trabajo
+práctico fue predecir el valor de la variable
+\textit{median\_housing\_price} utilizando el resto de las covariables
+del dataset. La estimación se realizó utilizando los tres modelos de
+regresión con regularización presentados.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Importamos los paquetes necesarios}
+\PY{c+c1}{\PYZsh{} Python ≥3.5}
+\PY{k+kn}{import} \PY{n+nn}{sys}
+\PY{k}{assert} \PY{n}{sys}\PY{o}{.}\PY{n}{version\PYZus{}info} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}
+
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\PY{k+kn}{import} \PY{n+nn}{matplotlib} \PY{k}{as} \PY{n+nn}{mpl}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{patches} \PY{k+kn}{import} \PY{n}{Patch}
+\PY{n}{mpl}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{axes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{labelsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+\PY{n}{mpl}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xtick}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{labelsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+\PY{n}{mpl}\PY{o}{.}\PY{n}{rc}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ytick}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{labelsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+\PY{k+kn}{from} \PY{n+nn}{pandas}\PY{n+nn}{.}\PY{n+nn}{plotting} \PY{k+kn}{import} \PY{n}{scatter\PYZus{}matrix}
+
+\PY{c+c1}{\PYZsh{} Scikit\PYZhy{}Learn ≥0.20}
+\PY{k+kn}{import} \PY{n+nn}{sklearn}
+\PY{k}{assert} \PY{n}{sklearn}\PY{o}{.}\PY{n}{\PYZus{}\PYZus{}version\PYZus{}\PYZus{}} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0.20}\PY{l+s+s2}{\PYZdq{}}
+
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{StratifiedShuffleSplit}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{zlib} \PY{k+kn}{import} \PY{n}{crc32}
+\PY{k+kn}{import} \PY{n+nn}{hashlib}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{image} \PY{k}{as} \PY{n+nn}{mpimg}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{train\PYZus{}test\PYZus{}split}
+\PY{k+kn}{from} \PY{n+nn}{six}\PY{n+nn}{.}\PY{n+nn}{moves} \PY{k+kn}{import} \PY{n}{urllib}
+\PY{k+kn}{from} \PY{n+nn}{scipy} \PY{k+kn}{import} \PY{n}{stats}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{mean\PYZus{}squared\PYZus{}error}
+\PY{k+kn}{from} \PY{n+nn}{sklearn} \PY{k+kn}{import} \PY{n}{metrics}
+\PY{k+kn}{from} \PY{n+nn}{sklearn} \PY{k+kn}{import} \PY{n}{linear\PYZus{}model}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{pipeline} \PY{k+kn}{import} \PY{n}{Pipeline}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{PolynomialFeatures}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{GridSearchCV}\PY{p}{,} \PY{n}{train\PYZus{}test\PYZus{}split}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{p}{(}\PY{n}{TimeSeriesSplit}\PY{p}{,} \PY{n}{KFold}\PY{p}{,} \PY{n}{ShuffleSplit}\PY{p}{,}
+\PY{n}{StratifiedKFold}\PY{p}{,} \PY{n}{GroupShuffleSplit}\PY{p}{,}
+\PY{n}{GroupKFold}\PY{p}{,} \PY{n}{StratifiedShuffleSplit}\PY{p}{,}\PY{n}{cross\PYZus{}val\PYZus{}score}\PY{p}{)}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{Ridge}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{base} \PY{k+kn}{import} \PY{n}{BaseEstimator}\PY{p}{,} \PY{n}{TransformerMixin}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{StandardScaler}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{compose} \PY{k+kn}{import} \PY{n}{ColumnTransformer}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{p}{(}\PY{n}{OrdinalEncoder}\PY{p}{,}\PY{n}{OneHotEncoder}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Donde guardar las figuras}
+\PY{n}{PROJECT\PYZus{}ROOT\PYZus{}DIR} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{CHAPTER\PYZus{}ID} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{end\PYZus{}to\PYZus{}end\PYZus{}project}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{IMAGES\PYZus{}PATH} \PY{o}{=} \PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{PROJECT\PYZus{}ROOT\PYZus{}DIR}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{images}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{CHAPTER\PYZus{}ID}\PY{p}{)}
+\PY{n}{os}\PY{o}{.}\PY{n}{makedirs}\PY{p}{(}\PY{n}{IMAGES\PYZus{}PATH}\PY{p}{,} \PY{n}{exist\PYZus{}ok}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{k}{def} \PY{n+nf}{save\PYZus{}fig}\PY{p}{(}\PY{n}{fig\PYZus{}id}\PY{p}{,} \PY{n}{tight\PYZus{}layout}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{fig\PYZus{}extension}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{png}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{resolution}\PY{o}{=}\PY{l+m+mi}{300}\PY{p}{)}\PY{p}{:}
+    \PY{n}{path} \PY{o}{=} \PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{IMAGES\PYZus{}PATH}\PY{p}{,} \PY{n}{fig\PYZus{}id} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{fig\PYZus{}extension}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Saving figure}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fig\PYZus{}id}\PY{p}{)}
+    \PY{k}{if} \PY{n}{tight\PYZus{}layout}\PY{p}{:}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{savefig}\PY{p}{(}\PY{n}{path}\PY{p}{,} \PY{n+nb}{format}\PY{o}{=}\PY{n}{fig\PYZus{}extension}\PY{p}{,} \PY{n}{dpi}\PY{o}{=}\PY{n}{resolution}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Cargamos los datos y miramos las 5 primeras entradas
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{housing} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{data/housing.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{;}
+\PY{n}{housing}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{exploraciuxf3n-de-los-datos}{%
+\section{Exploración de los datos}\label{exploraciuxf3n-de-los-datos}}
+
+    La base de datos cuenta con 10 variables, donde 9 seran features
+predictoras y ``median\_house\_value'' será la variable target.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{housing}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   longitude  latitude  housing\_median\_age  total\_rooms  total\_bedrooms  \textbackslash{}
+0    -122.23     37.88                41.0        880.0           129.0
+1    -122.22     37.86                21.0       7099.0          1106.0
+2    -122.24     37.85                52.0       1467.0           190.0
+3    -122.25     37.85                52.0       1274.0           235.0
+4    -122.25     37.85                52.0       1627.0           280.0
+
+   population  households  median\_income  median\_house\_value ocean\_proximity
+0       322.0       126.0         8.3252            452600.0        NEAR BAY
+1      2401.0      1138.0         8.3014            358500.0        NEAR BAY
+2       496.0       177.0         7.2574            352100.0        NEAR BAY
+3       558.0       219.0         5.6431            341300.0        NEAR BAY
+4       565.0       259.0         3.8462            342200.0        NEAR BAY
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{housing}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['longitude', 'latitude', 'housing\_median\_age', 'total\_rooms',
+       'total\_bedrooms', 'population', 'households', 'median\_income',
+       'median\_house\_value', 'ocean\_proximity'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Con gráficos de violin observamos la distribución de las features.
+Observamos que `longitude' y `latitude' presentan una distribución
+bimodal. A su vez observamos que `total\_rooms', `total\_bedrooms',
+`population', `households', están sesgadas a derecha y `median\_income',
+`median\_house\_value' tienen un grado menor de sesgo también a derecha.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{colnames} \PY{o}{=} \PY{n}{housing}\PY{o}{.}\PY{n}{columns}
+\PY{n}{fig} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{16}\PY{p}{,}\PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:}
+    \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplot}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{i}\PY{p}{)}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{n}{colnames}\PY{p}{[}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+    \PY{n}{sns}\PY{o}{.}\PY{n}{violinplot}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{housing}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{n}{i}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{orient}\PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{h}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_11_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    La tabla cuenta con datos de 20640 distritos. Como se puede obsevar en
+la tabla que sigue, la variable `total\_bedrooms' posee 207 datos
+faltantes.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{housing}\PY{o}{.}\PY{n}{info}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 20640 entries, 0 to 20639
+Data columns (total 10 columns):
+ \#   Column              Non-Null Count  Dtype
+---  ------              --------------  -----
+ 0   longitude           20640 non-null  float64
+ 1   latitude            20640 non-null  float64
+ 2   housing\_median\_age  20640 non-null  float64
+ 3   total\_rooms         20640 non-null  float64
+ 4   total\_bedrooms      20433 non-null  float64
+ 5   population          20640 non-null  float64
+ 6   households          20640 non-null  float64
+ 7   median\_income       20640 non-null  float64
+ 8   median\_house\_value  20640 non-null  float64
+ 9   ocean\_proximity     20640 non-null  object
+dtypes: float64(9), object(1)
+memory usage: 1.6+ MB
+    \end{Verbatim}
+
+    Discretizamos la variable median\_income en 5 categorías. Vemos que las
+proporciones categorías no son uniformes.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Download the California image}
+\PY{n}{images\PYZus{}path} \PY{o}{=} \PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{PROJECT\PYZus{}ROOT\PYZus{}DIR}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{images}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{end\PYZus{}to\PYZus{}end\PYZus{}project}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{os}\PY{o}{.}\PY{n}{makedirs}\PY{p}{(}\PY{n}{images\PYZus{}path}\PY{p}{,} \PY{n}{exist\PYZus{}ok}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{DOWNLOAD\PYZus{}ROOT} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{https://raw.githubusercontent.com/ageron/handson\PYZhy{}ml2/master/}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{filename} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{california.png}\PY{l+s+s2}{\PYZdq{}}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Downloading}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{filename}\PY{p}{)}
+\PY{n}{url} \PY{o}{=} \PY{n}{DOWNLOAD\PYZus{}ROOT} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{images/end\PYZus{}to\PYZus{}end\PYZus{}project/}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{filename}
+\PY{n}{urllib}\PY{o}{.}\PY{n}{request}\PY{o}{.}\PY{n}{urlretrieve}\PY{p}{(}\PY{n}{url}\PY{p}{,} \PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{images\PYZus{}path}\PY{p}{,} \PY{n}{filename}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Downloading california.png
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+('./images/end\_to\_end\_project/california.png',
+ <http.client.HTTPMessage at 0x7fe3206ce250>)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    El grafico de la figura X presenta la distribución geográfica de la
+mediana del valor de las casas por distrito en California. Donde el
+tamaño de punto es proporcional al tamaño de la población en ese
+distrito y el color del punto indica el valor de la variable target
+median\_house\_value. Se puede observar que las regiones de San
+Francisco y Los Angeles concentran la mayor cantidad de puntos rojos
+correspondientes a valores de mediana más elevados por distrito.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{california\PYZus{}img}\PY{o}{=}\PY{n}{mpimg}\PY{o}{.}\PY{n}{imread}\PY{p}{(}\PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{images\PYZus{}path}\PY{p}{,} \PY{n}{filename}\PY{p}{)}\PY{p}{)}
+\PY{n}{ax} \PY{o}{=} \PY{n}{housing}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{kind}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{scatter}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{longitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{latitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{7}\PY{p}{)}\PY{p}{,}
+                  \PY{n}{s}\PY{o}{=}\PY{n}{housing}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{/}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Population}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                  \PY{n}{c}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{median\PYZus{}house\PYZus{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{n}{plt}\PY{o}{.}\PY{n}{get\PYZus{}cmap}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{jet}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+                  \PY{n}{colorbar}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{imshow}\PY{p}{(}\PY{n}{california\PYZus{}img}\PY{p}{,} \PY{n}{extent}\PY{o}{=}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mf}{124.55}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mf}{113.80}\PY{p}{,} \PY{l+m+mf}{32.45}\PY{p}{,} \PY{l+m+mf}{42.05}\PY{p}{]}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{,}
+           \PY{n}{cmap}\PY{o}{=}\PY{n}{plt}\PY{o}{.}\PY{n}{get\PYZus{}cmap}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{jet}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Latitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Longitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+
+\PY{n}{prices} \PY{o}{=} \PY{n}{housing}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{median\PYZus{}house\PYZus{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{tick\PYZus{}values} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{n}{prices}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{prices}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{11}\PY{p}{)}
+\PY{n}{cbar} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{ticks}\PY{o}{=}\PY{n}{tick\PYZus{}values}\PY{o}{/}\PY{n}{prices}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{cbar}\PY{o}{.}\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}yticklabels}\PY{p}{(}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdl{}}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s2}{k}\PY{l+s+s2}{\PYZdq{}}\PY{o}{\PYZpc{}}\PY{p}{(}\PY{n+nb}{round}\PY{p}{(}\PY{n}{v}\PY{o}{/}\PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{)} \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{tick\PYZus{}values}\PY{p}{]}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+\PY{n}{cbar}\PY{o}{.}\PY{n}{set\PYZus{}label}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Median House Value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{)}
+\PY{n}{save\PYZus{}fig}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{california\PYZus{}housing\PYZus{}prices\PYZus{}plot}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Saving figure california\_housing\_prices\_plot
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_17_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    En la figura X2 se pueden observar los valores de la matriz de
+correlación entre las variables. Vemos que las variables `total\_rooms',
+`total\_bedrooms', `population' y `households', presentan valores de
+corelación cercanos a uno, por tanto dichas covariables seran
+transformadas de manera de resumir la informacion concentrada en ellas
+tal como se verá en la sección XXX.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Correlación entre variables preprocesamiento}
+\PY{n}{corr\PYZus{}matrix} \PY{o}{=} \PY{n}{housing}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{paleta} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{diverging\PYZus{}palette}\PY{p}{(}\PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{275}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+
+\PY{k}{with} \PY{n}{sns}\PY{o}{.}\PY{n}{axes\PYZus{}style}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+    \PY{n}{f}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+    \PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{corr\PYZus{}matrix}\PY{p}{,}
+                     \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                     \PY{n}{annot\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{12}\PY{p}{\PYZcb{}}\PY{p}{,}
+                     \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.2f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                     \PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} 
+                     \PY{n}{vmin}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} 
+                     \PY{n}{square}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} 
+                     \PY{n}{linewidths}\PY{o}{=}\PY{o}{.}\PY{l+m+mi}{01}\PY{p}{,} 
+                     \PY{n}{linecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lightgray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                     \PY{n}{cmap}\PY{o}{=}\PY{n}{paleta}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_19_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{metodologuxeda}{%
+\section{\texorpdfstring{\textbf{Metodología}}{Metodología}}\label{metodologuxeda}}
+
+    \hypertarget{separaciuxf3n-en-sets-de-train-y-test}{%
+\subsection{Separación en sets de train y
+test}\label{separaciuxf3n-en-sets-de-train-y-test}}
+
+Empleamos la estrategia de muestreo estratificado utilizando la variable
+median\_income, para no incluir un sesgo en el muestreo. Dividimos las
+observaciones en subgrupos homogéneos respetando la distribución que
+presenta el gráfico de la figura X3. Este método garantiza que tanto el
+set de test y de train sean representativos de toda la población.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{housing}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{cut}\PY{p}{(}\PY{n}{housing}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{median\PYZus{}income}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+                               \PY{n}{bins}\PY{o}{=}\PY{p}{[}\PY{l+m+mf}{0.}\PY{p}{,} \PY{l+m+mf}{1.5}\PY{p}{,} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{l+m+mf}{4.5}\PY{p}{,} \PY{l+m+mf}{6.}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{inf}\PY{p}{]}\PY{p}{,}
+                               \PY{n}{labels}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}\PY{p}{)}
+\PY{n}{housing}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{hist}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distribucion de ingresos en 5 grupos}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Text(0.5, 1.0, 'Distribucion de ingresos en 5 grupos')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_22_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Comparamos las proporciones de la variable income\_cat entre el data set
+completo, el set de testing resultado de un muestreo aleatorio y un
+muestreo estratificado. Vemos que el muestreo estratificado representa
+mejor las proporciones originales del set completo, por lo tanto
+elegimos este para realizar la división de datos.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{split} \PY{o}{=} \PY{n}{StratifiedShuffleSplit}\PY{p}{(}\PY{n}{n\PYZus{}splits}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{test\PYZus{}size}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{42}\PY{p}{)}
+\PY{k}{for} \PY{n}{train\PYZus{}index}\PY{p}{,} \PY{n}{test\PYZus{}index} \PY{o+ow}{in} \PY{n}{split}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{n}{housing}\PY{p}{,} \PY{n}{housing}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+    \PY{n}{strat\PYZus{}train\PYZus{}set} \PY{o}{=} \PY{n}{housing}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{train\PYZus{}index}\PY{p}{]}
+    \PY{n}{strat\PYZus{}test\PYZus{}set} \PY{o}{=} \PY{n}{housing}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{test\PYZus{}index}\PY{p}{]}
+
+\PY{k}{def} \PY{n+nf}{income\PYZus{}cat\PYZus{}proportions}\PY{p}{(}\PY{n}{data}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{data}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)} \PY{o}{/} \PY{n+nb}{len}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+
+
+\PY{n}{train\PYZus{}set}\PY{p}{,} \PY{n}{test\PYZus{}set} \PY{o}{=} \PY{n}{train\PYZus{}test\PYZus{}split}\PY{p}{(}\PY{n}{housing}\PY{p}{,} \PY{n}{test\PYZus{}size}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{42}\PY{p}{)}
+
+\PY{n}{compare\PYZus{}props} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Overall}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{income\PYZus{}cat\PYZus{}proportions}\PY{p}{(}\PY{n}{housing}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stratified}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{income\PYZus{}cat\PYZus{}proportions}\PY{p}{(}\PY{n}{strat\PYZus{}test\PYZus{}set}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Random}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{income\PYZus{}cat\PYZus{}proportions}\PY{p}{(}\PY{n}{test\PYZus{}set}\PY{p}{)}\PY{p}{,}
+\PY{p}{\PYZcb{}}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Rand. }\PY{l+s+si}{\PYZpc{}e}\PY{l+s+s2}{rror}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Random}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{/} \PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Overall}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{100}
+\PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Strat. }\PY{l+s+si}{\PYZpc{}e}\PY{l+s+s2}{rror}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{100} \PY{o}{*} \PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Stratified}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{/} \PY{n}{compare\PYZus{}props}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Overall}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{100}
+
+\PY{n}{compare\PYZus{}props}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+    Overall  Stratified    Random  Rand. \%error  Strat. \%error
+1  0.039826    0.039729  0.040213      0.973236      -0.243309
+2  0.318847    0.318798  0.324370      1.732260      -0.015195
+3  0.350581    0.350533  0.358527      2.266446      -0.013820
+4  0.176308    0.176357  0.167393     -5.056334       0.027480
+5  0.114438    0.114583  0.109496     -4.318374       0.127011
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{procesamiento-y-limpieza-de-datos}{%
+\subsection{Procesamiento y limpieza de
+datos}\label{procesamiento-y-limpieza-de-datos}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}sacamos la variable income\PYZus{}cat dado que sólo fue utilizada para dividir estratificadamente el data set}
+\PY{n}{strat\PYZus{}train\PYZus{}set} \PY{o}{=} \PY{n}{strat\PYZus{}train\PYZus{}set}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+
+\PY{n}{strat\PYZus{}test\PYZus{}set} \PY{o}{=} \PY{n}{strat\PYZus{}test\PYZus{}set}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{income\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Para la preparación de datos seguimos los siguientes pasos: * Limpieza
+de datos faltantes * Estandarización de covariables numéricas excepto
+`longitude' y `latitude' * Transformacion de variables `total\_rooms',
+`total\_bedrooms', `population' y `households' en rooms\_per\_household,
+population\_per\_household, bedrooms\_per\_room * Transformación de la
+variable categorica mediante la funcion \emph{oneHotEncoder()} generando
+cinco variables numericas binarias (una por cada categoria).
+
+Este pipeline de procesamiento fue aplicado tanto al set de train como
+al set de test.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}esto lo hacemos para que el pipeline funcione correctamente. Simplemente transforma el dataset en un ndArray}
+\PY{c+c1}{\PYZsh{}para que luego pueda utilizarlo la transformacion con CombinedAttributesAdder}
+\PY{k}{class} \PY{n+nc}{ConvertToNDArray}\PY{p}{(}\PY{n}{BaseEstimator}\PY{p}{,} \PY{n}{TransformerMixin}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} no *args or **kargs}
+        \PY{k}{return} \PY{k+kc}{None}
+    \PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}  \PY{c+c1}{\PYZsh{} nothing else to do}
+    \PY{k}{def} \PY{n+nf}{transform}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{X}\PY{o}{.}\PY{n}{values}
+
+\PY{n}{convert\PYZus{}toNdArray} \PY{o}{=} \PY{n}{ConvertToNDArray}\PY{p}{(}\PY{p}{)}
+
+\PY{k}{class} \PY{n+nc}{CombinedAttributesAdder}\PY{p}{(}\PY{n}{BaseEstimator}\PY{p}{,} \PY{n}{TransformerMixin}\PY{p}{)}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{add\PYZus{}bedrooms\PYZus{}per\PYZus{}room}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{rooms\PYZus{}ix}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{bedrooms\PYZus{}ix}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{population\PYZus{}ix}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{households\PYZus{}ix}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} no *args or **kargs}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{add\PYZus{}bedrooms\PYZus{}per\PYZus{}room} \PY{o}{=} \PY{n}{add\PYZus{}bedrooms\PYZus{}per\PYZus{}room}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{rooms\PYZus{}ix} \PY{o}{=} \PY{n}{rooms\PYZus{}ix} 
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bedrooms\PYZus{}ix}\PY{o}{=}\PY{n}{bedrooms\PYZus{}ix} 
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{population\PYZus{}ix}\PY{o}{=}\PY{n}{population\PYZus{}ix} 
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{households\PYZus{}ix}\PY{o}{=}\PY{n}{households\PYZus{}ix}
+        
+    \PY{k}{def} \PY{n+nf}{fit}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n+nb+bp}{self}  \PY{c+c1}{\PYZsh{} nothing else to do}
+    
+    \PY{k}{def} \PY{n+nf}{transform}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{X}\PY{p}{)}\PY{p}{:}
+        \PY{n}{rooms\PYZus{}per\PYZus{}household} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{rooms\PYZus{}ix}\PY{p}{]} \PY{o}{/} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{households\PYZus{}ix}\PY{p}{]}
+        \PY{n}{population\PYZus{}per\PYZus{}household} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{population\PYZus{}ix}\PY{p}{]} \PY{o}{/} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{households\PYZus{}ix}\PY{p}{]}
+        \PY{k}{if} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{add\PYZus{}bedrooms\PYZus{}per\PYZus{}room}\PY{p}{:}
+            \PY{n}{bedrooms\PYZus{}per\PYZus{}room} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{bedrooms\PYZus{}ix}\PY{p}{]} \PY{o}{/} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{rooms\PYZus{}ix}\PY{p}{]}
+            \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{c\PYZus{}}\PY{p}{[}\PY{n}{X}\PY{p}{,} \PY{n}{rooms\PYZus{}per\PYZus{}household}\PY{p}{,} \PY{n}{population\PYZus{}per\PYZus{}household}\PY{p}{,}
+                         \PY{n}{bedrooms\PYZus{}per\PYZus{}room}\PY{p}{]}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{result} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{c\PYZus{}}\PY{p}{[}\PY{n}{X}\PY{p}{,} \PY{n}{rooms\PYZus{}per\PYZus{}household}\PY{p}{,} \PY{n}{population\PYZus{}per\PYZus{}household}\PY{p}{]}
+            \PY{k}{return} \PY{n}{result}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{processingData}\PY{p}{(}\PY{n}{dataSet}\PY{p}{,} \PY{n}{targetFeature}\PY{p}{,} \PY{n}{categoricalFeature}\PY{p}{,} \PY{n}{col\PYZus{}names}\PY{p}{,} \PY{n}{extra\PYZus{}attribs}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{}quitamos los nan}
+        \PY{n}{dataSet\PYZus{}withoutnan} \PY{o}{=} \PY{n}{dataSet}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}dividimos el dataset en las variables que se usan en la prediccion y la variable a predecir}
+        \PY{n}{data} \PY{o}{=} \PY{n}{dataSet\PYZus{}withoutnan}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{targetFeature}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{} drop labels for training set}
+        \PY{n}{data\PYZus{}labels} \PY{o}{=} \PY{n}{dataSet\PYZus{}withoutnan}\PY{p}{[}\PY{n}{targetFeature}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}procesamos primero los datos numericos}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{procesando los datos numericos...}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{numerical\PYZus{}data} \PY{o}{=} \PY{n}{data}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{p}{[}\PY{n}{categoricalFeature}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{longitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{latitude}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}obtenemos los indices de las columnas que luego vamos a combinar}
+        \PY{n}{rooms\PYZus{}ix}\PY{p}{,} \PY{n}{bedrooms\PYZus{}ix}\PY{p}{,} \PY{n}{population\PYZus{}ix}\PY{p}{,} \PY{n}{households\PYZus{}ix} \PY{o}{=} \PY{p}{[}
+            \PY{n}{data}\PY{o}{.}\PY{n}{columns}\PY{o}{.}\PY{n}{get\PYZus{}loc}\PY{p}{(}\PY{n}{c}\PY{p}{)} \PY{k}{for} \PY{n}{c} \PY{o+ow}{in} \PY{n}{col\PYZus{}names}\PY{p}{]} \PY{c+c1}{\PYZsh{} get the column indices}
+        
+        \PY{c+c1}{\PYZsh{}generamos el dataframe con los atributos extra}
+        \PY{n}{attr\PYZus{}adder} \PY{o}{=} \PY{n}{CombinedAttributesAdder}\PY{p}{(}\PY{n}{add\PYZus{}bedrooms\PYZus{}per\PYZus{}room}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{data\PYZus{}extra\PYZus{}attribs} \PY{o}{=} \PY{n}{attr\PYZus{}adder}\PY{o}{.}\PY{n}{transform}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{values}\PY{p}{)}
+        \PY{n}{data\PYZus{}extra} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+            \PY{n}{data\PYZus{}extra\PYZus{}attribs}\PY{p}{,}
+            \PY{n}{columns}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{o}{+}\PY{n}{extra\PYZus{}attribs}\PY{p}{,}
+            \PY{n}{index}\PY{o}{=}\PY{n}{data}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+            
+        \PY{n}{num\PYZus{}pipeline} \PY{o}{=} \PY{n}{Pipeline}\PY{p}{(}\PY{p}{[}
+        \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{convert\PYZus{}toNdArray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ConvertToNDArray}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+        \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{attribs\PYZus{}adder}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{CombinedAttributesAdder}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+        \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{std\PYZus{}scaler}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{StandardScaler}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+        \PY{p}{]}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{}procesamos los datos categoricos}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{procensando variables categoricas...}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{cat\PYZus{}attribs} \PY{o}{=} \PY{p}{[}\PY{n}{categoricalFeature}\PY{p}{]}
+
+        \PY{n}{full\PYZus{}pipeline} \PY{o}{=} \PY{n}{ColumnTransformer}\PY{p}{(}\PY{p}{[}
+                \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{num}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{num\PYZus{}pipeline}\PY{p}{,} \PY{n+nb}{list}\PY{p}{(}\PY{n}{numerical\PYZus{}data}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                \PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{OneHotEncoder}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{cat\PYZus{}attribs}\PY{p}{)}\PY{p}{,}
+            \PY{p}{]}\PY{p}{)}
+
+        \PY{n}{data\PYZus{}prepared} \PY{o}{=} \PY{n}{full\PYZus{}pipeline}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{data\PYZus{}extra}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}devolvemos los datos procesados y los objetivos}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{procesamiento finalizado :D}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{k}{return} \PY{n}{data\PYZus{}prepared}\PY{p}{,} \PY{n}{data\PYZus{}labels}\PY{p}{,} \PY{n}{data\PYZus{}extra}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{,} \PY{n}{data\PYZus{}processed} \PY{o}{=} \PY{n}{processingData}\PY{p}{(}\PY{n}{strat\PYZus{}train\PYZus{}set}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{median\PYZus{}house\PYZus{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ocean\PYZus{}proximity}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}rooms}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}bedrooms}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{population}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{households}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} 
+                \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{population\PYZus{}per\PYZus{}household}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+procesando los datos numericos{\ldots}
+
+procensando variables categoricas{\ldots}
+
+procesamiento finalizado :D
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{test}\PY{p}{,} \PY{n}{test\PYZus{}labels}\PY{p}{,} \PY{n}{data\PYZus{}processed\PYZus{}test} \PY{o}{=} \PY{n}{processingData}\PY{p}{(}\PY{n}{strat\PYZus{}test\PYZus{}set}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{median\PYZus{}house\PYZus{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                                        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ocean\PYZus{}proximity}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+                                        \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}rooms}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total\PYZus{}bedrooms}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{population}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{households}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} 
+                                        \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{population\PYZus{}per\PYZus{}household}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+procesando los datos numericos{\ldots}
+
+procensando variables categoricas{\ldots}
+
+procesamiento finalizado :D
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{correlationPostTransform}\PY{p}{(}\PY{n}{data\PYZus{}prepared}\PY{p}{,} \PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{p}{)}\PY{p}{:}
+    \PY{n}{combined\PYZus{}data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{c\PYZus{}}\PY{p}{[}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{data\PYZus{}prepared}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)} 
+
+    \PY{n}{names} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{longitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{latitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{housing\PYZus{}median\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}rooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}bedrooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{households}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{median\PYZus{}income}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{c+c1}{\PYZsh{}11    }
+
+    \PY{n}{data\PYZus{}corr} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+        \PY{n}{combined\PYZus{}data}\PY{p}{,}
+        \PY{n}{columns}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n}{names}\PY{p}{)}\PY{o}{+}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}\PY{c+c1}{\PYZsh{}+5}
+        \PY{n}{index}\PY{o}{=}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+    
+    \PY{n}{attributes} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{housing\PYZus{}median\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}rooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}bedrooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{households}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{median\PYZus{}income}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{n}{axes} \PY{o}{=} \PY{n}{scatter\PYZus{}matrix}\PY{p}{(}\PY{n}{data\PYZus{}corr}\PY{p}{[}\PY{n}{attributes}\PY{p}{]}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{n}{hist\PYZus{}kwds}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bins}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+m+mi}{30}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{k}{for} \PY{n}{ax} \PY{o+ow}{in} \PY{n}{axes}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{xaxis}\PY{o}{.}\PY{n}{label}\PY{o}{.}\PY{n}{set\PYZus{}rotation}\PY{p}{(}\PY{l+m+mi}{90}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{yaxis}\PY{o}{.}\PY{n}{label}\PY{o}{.}\PY{n}{set\PYZus{}rotation}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{ax}\PY{o}{.}\PY{n}{yaxis}\PY{o}{.}\PY{n}{label}\PY{o}{.}\PY{n}{set\PYZus{}ha}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{gcf}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{wspace}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{hspace}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{corr\PYZus{}matrix\PYZus{}pr} \PY{o}{=} \PY{n}{data\PYZus{}corr}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+    \PY{n}{paleta} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{diverging\PYZus{}palette}\PY{p}{(}\PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{275}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+    \PY{k}{with} \PY{n}{sns}\PY{o}{.}\PY{n}{axes\PYZus{}style}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{f}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+        \PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{corr\PYZus{}matrix\PYZus{}pr}\PY{p}{,}
+                         \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                         \PY{n}{annot\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{12}\PY{p}{\PYZcb{}}\PY{p}{,}
+                         \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.2f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                         \PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{vmin}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{square}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} 
+                         \PY{n}{linewidths}\PY{o}{=}\PY{o}{.}\PY{l+m+mi}{01}\PY{p}{,} 
+                         \PY{n}{linecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lightgray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                         \PY{n}{cmap}\PY{o}{=}\PY{n}{paleta}\PY{p}{)}
+    \PY{k}{return} \PY{n}{combined\PYZus{}data}\PY{p}{,} \PY{n}{data\PYZus{}corr}
+\end{Verbatim}
+\end{tcolorbox}
+
+    El resultado de la estandarización de todas las variables numericas
+incluyendo las variables transformadas, exceptuando `lonlitude' y
+`latitude' de las variables arroja una matriz de correlacion como se
+observa en la figura X4. En función a las regiones de mayor correlación
+entre variables decidimos eliminar las variables `total\_bedrooms',
+`population', `households' y 'rooms\_per\_household para los análisis
+posteriores.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{train\PYZus{}transf}\PY{p}{,} \PY{n}{data\PYZus{}train\PYZus{}transf} \PY{o}{=} \PY{n}{correlationPostTransform}\PY{p}{(}\PY{n}{train}\PY{p}{,}\PY{n}{data\PYZus{}processed}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_34_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_34_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{test\PYZus{}transf}\PY{p}{,} \PY{n}{data\PYZus{}test\PYZus{}transf} \PY{o}{=} \PY{n}{correlationPostTransform}\PY{p}{(}\PY{n}{test}\PY{p}{,}\PY{n}{data\PYZus{}processed\PYZus{}test}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_35_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{finalizacionDeProcesamiento\PYZus{}notTransf}\PY{p}{(}\PY{n}{data\PYZus{}prepared}\PY{p}{,} \PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{p}{)}\PY{p}{:}
+    \PY{n}{combined\PYZus{}data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{c\PYZus{}}\PY{p}{[}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{data\PYZus{}prepared}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)} 
+
+    \PY{n}{names} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{longitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{latitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{housing\PYZus{}median\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}rooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}bedrooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{households}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{median\PYZus{}income}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+    \PY{n}{namesToDrop} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+
+    \PY{n}{data\PYZus{}corr} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+        \PY{n}{combined\PYZus{}data}\PY{p}{,}
+        \PY{n}{columns}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n}{names}\PY{p}{)}\PY{o}{+}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{n}{index}\PY{o}{=}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{namesToDrop}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{corr\PYZus{}matrix\PYZus{}pr} \PY{o}{=} \PY{n}{data\PYZus{}corr}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+    \PY{n}{paleta} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{diverging\PYZus{}palette}\PY{p}{(}\PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{275}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+    \PY{k}{with} \PY{n}{sns}\PY{o}{.}\PY{n}{axes\PYZus{}style}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{f}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+        \PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{corr\PYZus{}matrix\PYZus{}pr}\PY{p}{,}
+                         \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                         \PY{n}{annot\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{12}\PY{p}{\PYZcb{}}\PY{p}{,}
+                         \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.2f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                         \PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{vmin}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{square}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} 
+                         \PY{n}{linewidths}\PY{o}{=}\PY{o}{.}\PY{l+m+mi}{01}\PY{p}{,} 
+                         \PY{n}{linecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lightgray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                         \PY{n}{cmap}\PY{o}{=}\PY{n}{paleta}\PY{p}{)}
+    \PY{k}{return} \PY{n}{combined\PYZus{}data}\PY{p}{,} \PY{n}{data\PYZus{}corr}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{train\PYZus{}notTransf}\PY{p}{,} \PY{n}{data\PYZus{}train\PYZus{}notTransf} \PY{o}{=} \PY{n}{finalizacionDeProcesamiento\PYZus{}notTransf}\PY{p}{(}\PY{n}{train}\PY{p}{,}\PY{n}{data\PYZus{}processed}\PY{p}{)}
+\PY{n}{test\PYZus{}notTransf}\PY{p}{,} \PY{n}{data\PYZus{}test\PYZus{}notTransf} \PY{o}{=} \PY{n}{finalizacionDeProcesamiento\PYZus{}notTransf}\PY{p}{(}\PY{n}{test}\PY{p}{,}\PY{n}{data\PYZus{}processed\PYZus{}test}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_37_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_37_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{finalizacionDeProcesamiento\PYZus{}drop}\PY{p}{(}\PY{n}{data\PYZus{}prepared}\PY{p}{,} \PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{p}{)}\PY{p}{:}
+    \PY{n}{combined\PYZus{}data}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{c\PYZus{}}\PY{p}{[}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{data\PYZus{}prepared}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)} 
+
+    \PY{n}{names} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{longitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{latitude}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{housing\PYZus{}median\PYZus{}age}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}rooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+           \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}bedrooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{households}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{median\PYZus{}income}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{namesToDrop} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{population}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{households}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}rooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total\PYZus{}bedrooms}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                   \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bedrooms\PYZus{}per\PYZus{}room}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rooms\PYZus{}per\PYZus{}household}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+    \PY{n}{data\PYZus{}corr} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}
+        \PY{n}{combined\PYZus{}data}\PY{p}{,}
+        \PY{n}{columns}\PY{o}{=}\PY{n+nb}{list}\PY{p}{(}\PY{n}{names}\PY{p}{)}\PY{o}{+}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{2}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{3}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{4}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{n}{index}\PY{o}{=}\PY{n}{df\PYZus{}extra\PYZus{}attr}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{namesToDrop}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{corr\PYZus{}matrix\PYZus{}pr} \PY{o}{=} \PY{n}{data\PYZus{}corr}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+    \PY{n}{paleta} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{diverging\PYZus{}palette}\PY{p}{(}\PY{l+m+mi}{150}\PY{p}{,} \PY{l+m+mi}{275}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{80}\PY{p}{,} \PY{n}{l}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,} \PY{n}{n}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{)}
+    \PY{k}{with} \PY{n}{sns}\PY{o}{.}\PY{n}{axes\PYZus{}style}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{n}{f}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{17}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}\PY{p}{)}
+        \PY{n}{ax} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{heatmap}\PY{p}{(}\PY{n}{corr\PYZus{}matrix\PYZus{}pr}\PY{p}{,}
+                         \PY{n}{annot}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                         \PY{n}{annot\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{size}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+m+mi}{12}\PY{p}{\PYZcb{}}\PY{p}{,}
+                         \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.2f}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                         \PY{n}{vmax}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{vmin}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} 
+                         \PY{n}{square}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} 
+                         \PY{n}{linewidths}\PY{o}{=}\PY{o}{.}\PY{l+m+mi}{01}\PY{p}{,} 
+                         \PY{n}{linecolor}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{lightgray}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+                         \PY{n}{cmap}\PY{o}{=}\PY{n}{paleta}\PY{p}{)}
+    \PY{k}{return} \PY{n}{combined\PYZus{}data}\PY{p}{,} \PY{n}{data\PYZus{}corr}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{train\PYZus{}dropped}\PY{p}{,} \PY{n}{data\PYZus{}train\PYZus{}dropped} \PY{o}{=} \PY{n}{finalizacionDeProcesamiento\PYZus{}drop}\PY{p}{(}\PY{n}{train}\PY{p}{,}\PY{n}{data\PYZus{}processed}\PY{p}{)}
+\PY{n}{test\PYZus{}dropped}\PY{p}{,} \PY{n}{data\PYZus{}test\PYZus{}dropped} \PY{o}{=} \PY{n}{finalizacionDeProcesamiento\PYZus{}drop}\PY{p}{(}\PY{n}{test}\PY{p}{,}\PY{n}{data\PYZus{}processed\PYZus{}test}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_39_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_39_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{entrenamiento-de-los-modelos}{%
+\subsection{\texorpdfstring{\textbf{Entrenamiento de los
+modelos}}{Entrenamiento de los modelos}}\label{entrenamiento-de-los-modelos}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{selectValuesForHyperparameter}\PY{p}{(}\PY{n}{initialValue}\PY{p}{,} \PY{n}{lastValue}\PY{p}{,} \PY{n}{jumps}\PY{p}{)}\PY{p}{:}
+    \PY{n}{rv} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n}{initialValue}\PY{o}{*}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,} \PY{n+nb}{int}\PY{p}{(}\PY{n}{lastValue}\PY{o}{*}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{,}\PY{n+nb}{int}\PY{p}{(}\PY{n}{jumps}\PY{o}{*}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+        \PY{n}{rv}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{v}\PY{o}{/}\PY{l+m+mi}{100}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+    \PY{k}{return} \PY{n}{rv} 
+
+\PY{k}{def} \PY{n+nf}{models}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{,} \PY{n}{test}\PY{p}{,} \PY{n}{test\PYZus{}labels}\PY{p}{)}\PY{p}{:}
+    
+    \PY{n}{alphaValues} \PY{o}{=} \PY{n}{selectValuesForHyperparameter}\PY{p}{(}\PY{l+m+mf}{0.8}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}LASSO}
+    
+    \PY{c+c1}{\PYZsh{}búsqueda de hiperpatámetro}
+    \PY{n}{lasso\PYZus{}params} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{alphaValues}\PY{p}{\PYZcb{}}
+    \PY{n}{lasso} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{Lasso}\PY{p}{(}\PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{)}
+    \PY{n}{clf\PYZus{}lasso} \PY{o}{=} \PY{n}{GridSearchCV}\PY{p}{(}\PY{n}{lasso}\PY{p}{,} \PY{n}{lasso\PYZus{}params}\PY{p}{,} \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+                                    \PY{n}{scoring}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{neg\PYZus{}mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                                    \PY{n}{return\PYZus{}train\PYZus{}score}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{n}{clf\PYZus{}lasso}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{El valor del hiperparámetro seleccionado para LASSO es:}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{clf\PYZus{}lasso}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}train}
+    \PY{n}{lasso} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{LassoCV}\PY{p}{(}\PY{n}{alphas}\PY{o}{=}\PY{p}{[}\PY{n}{clf\PYZus{}lasso}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                               \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{,} 
+                               \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} 
+                               \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{lasso}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}test}
+    \PY{n}{housing\PYZus{}predictions\PYZus{}lasso} \PY{o}{=} \PY{n}{lasso}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{test}\PY{p}{)}
+    \PY{n}{lin\PYZus{}mse\PYZus{}lasso} \PY{o}{=} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{(}\PY{n}{test\PYZus{}labels}\PY{p}{,} \PY{n}{housing\PYZus{}predictions\PYZus{}lasso}\PY{p}{)}
+    \PY{n}{lin\PYZus{}rmse\PYZus{}lasso} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{lin\PYZus{}mse\PYZus{}lasso}\PY{p}{)}
+    
+    
+    
+    \PY{c+c1}{\PYZsh{}RIDGE}
+    
+    \PY{c+c1}{\PYZsh{}búsqueda de hiperpatámetro}
+    \PY{n}{alphaValues} \PY{o}{=} \PY{n}{selectValuesForHyperparameter}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)}    
+    \PY{n}{ridge\PYZus{}params} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{alphaValues}\PY{p}{\PYZcb{}}
+    \PY{n}{ridge} \PY{o}{=} \PY{n}{Ridge}\PY{p}{(}\PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{)}
+    \PY{n}{clf\PYZus{}ridge} \PY{o}{=} \PY{n}{GridSearchCV}\PY{p}{(}\PY{n}{ridge}\PY{p}{,} \PY{n}{ridge\PYZus{}params}\PY{p}{,} \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+                                        \PY{n}{scoring}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{neg\PYZus{}mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                                        \PY{n}{return\PYZus{}train\PYZus{}score}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{n}{clf\PYZus{}ridge}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{El valor del hiperparámetro seleccionado para Ridge es:}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{clf\PYZus{}ridge}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+   
+    \PY{c+c1}{\PYZsh{}train}
+    \PY{n}{ridge} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{RidgeCV}\PY{p}{(}\PY{n}{alphas}\PY{o}{=}\PY{p}{[}\PY{n}{clf\PYZus{}ridge}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                             \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} 
+                             \PY{n}{scoring}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{neg\PYZus{}mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{ridge}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}test}
+    \PY{n}{housing\PYZus{}predictions\PYZus{}ridge} \PY{o}{=} \PY{n}{ridge}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{test}\PY{p}{)}
+    \PY{n}{lin\PYZus{}mse\PYZus{}ridge} \PY{o}{=} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{(}\PY{n}{test\PYZus{}labels}\PY{p}{,} \PY{n}{housing\PYZus{}predictions\PYZus{}ridge}\PY{p}{)}
+    \PY{n}{lin\PYZus{}rmse\PYZus{}ridge} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{lin\PYZus{}mse\PYZus{}ridge}\PY{p}{)}
+    
+    
+    
+    \PY{c+c1}{\PYZsh{}ELASTIC NET}
+    
+    \PY{c+c1}{\PYZsh{}búsqueda de hiperpatámetro}
+    \PY{n}{alphaValues} \PY{o}{=} \PY{n}{selectValuesForHyperparameter}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{;}  
+    \PY{n}{l1Values} \PY{o}{=} \PY{n}{selectValuesForHyperparameter}\PY{p}{(}\PY{l+m+mf}{0.05}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mf}{0.05}\PY{p}{)}\PY{p}{;}  
+
+    \PY{n}{elastic\PYZus{}params} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{alphaValues}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{l1\PYZus{}ratio}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{n}{l1Values}\PY{p}{\PYZcb{}}
+    \PY{n}{elastic} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{ElasticNet}\PY{p}{(}\PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{)}
+    \PY{n}{clf\PYZus{}elastic} \PY{o}{=} \PY{n}{GridSearchCV}\PY{p}{(}\PY{n}{elastic}\PY{p}{,} \PY{n}{elastic\PYZus{}params}\PY{p}{,} \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,}
+                                        \PY{n}{scoring}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{neg\PYZus{}mean\PYZus{}squared\PYZus{}error}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}  
+                                        \PY{n}{return\PYZus{}train\PYZus{}score}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+    \PY{n}{clf\PYZus{}elastic}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{El valor de los hiperparámetros seleccionados para Elastic Net es: alpha:}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{clf\PYZus{}elastic}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, l1:}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{clf\PYZus{}elastic}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{l1\PYZus{}ratio}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+       
+    \PY{c+c1}{\PYZsh{}train}
+    \PY{n}{elastic} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{ElasticNetCV}\PY{p}{(}\PY{n}{alphas}\PY{o}{=}\PY{p}{[}\PY{n}{clf\PYZus{}elastic}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alpha}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                                  \PY{n}{l1\PYZus{}ratio}\PY{o}{=}\PY{p}{[}\PY{n}{clf\PYZus{}elastic}\PY{o}{.}\PY{n}{best\PYZus{}params\PYZus{}}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{l1\PYZus{}ratio}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,}
+                                  \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{,}
+                                  \PY{n}{cv}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+    \PY{n}{elastic}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{train}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}test}
+    \PY{n}{housing\PYZus{}predictions\PYZus{}elastic} \PY{o}{=} \PY{n}{elastic}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{test}\PY{p}{)}
+    \PY{n}{lin\PYZus{}mse\PYZus{}elastic} \PY{o}{=} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{(}\PY{n}{test\PYZus{}labels}\PY{p}{,} \PY{n}{housing\PYZus{}predictions\PYZus{}elastic}\PY{p}{)}
+    \PY{n}{lin\PYZus{}rmse\PYZus{}elastic} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{lin\PYZus{}mse\PYZus{}elastic}\PY{p}{)}
+    
+    \PY{c+c1}{\PYZsh{}Comparación de los RMSE para los tres modelos}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{El RMSE para Lasso es:}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{lin\PYZus{}rmse\PYZus{}lasso}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{El RMSE para Ridge es:}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{lin\PYZus{}rmse\PYZus{}ridge}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{El RMSE para Elastic Net es:}\PY{l+s+s2}{\PYZdq{}}\PY{o}{+}\PY{n+nb}{str}\PY{p}{(}\PY{n}{lin\PYZus{}rmse\PYZus{}elastic}\PY{p}{)}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultados-y-discusiuxf3n}{%
+\section{Resultados y Discusión}\label{resultados-y-discusiuxf3n}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 1}
+\PY{n}{models}\PY{p}{(}\PY{n}{data\PYZus{}train\PYZus{}notTransf}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{,} \PY{n}{data\PYZus{}test\PYZus{}notTransf}\PY{p}{,} \PY{n}{test\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+El valor del hiperparámetro seleccionado para LASSO es:0.8
+
+El valor del hiperparámetro seleccionado para Ridge es:1.0
+
+El valor de los hiperparámetros seleccionados para Elastic Net es: alpha:0.2,
+l1:0.95
+
+El RMSE para Lasso es:67236.40792328252
+
+El RMSE para Ridge es:67259.11714088148
+
+El RMSE para Elastic Net es:67458.41749028569
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 2}
+\PY{n}{models}\PY{p}{(}\PY{n}{train\PYZus{}transf}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{,} \PY{n}{test\PYZus{}transf}\PY{p}{,} \PY{n}{test\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+El valor del hiperparámetro seleccionado para LASSO es:0.8
+
+El valor del hiperparámetro seleccionado para Ridge es:1.0
+
+El valor de los hiperparámetros seleccionados para Elastic Net es: alpha:0.2,
+l1:0.95
+
+El RMSE para Lasso es:67288.37743804531
+
+El RMSE para Ridge es:67310.25810605213
+
+El RMSE para Elastic Net es:67457.45464337643
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 3}
+\PY{n}{models}\PY{p}{(}\PY{n}{data\PYZus{}train\PYZus{}dropped}\PY{p}{,} \PY{n}{train\PYZus{}labels}\PY{p}{,} \PY{n}{data\PYZus{}test\PYZus{}dropped}\PY{p}{,} \PY{n}{test\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+El valor del hiperparámetro seleccionado para LASSO es:0.8
+
+El valor del hiperparámetro seleccionado para Ridge es:1.0
+
+El valor de los hiperparámetros seleccionados para Elastic Net es: alpha:0.2,
+l1:0.95
+
+El RMSE para Lasso es:70445.1158831168
+
+El RMSE para Ridge es:70472.70611634907
+
+El RMSE para Elastic Net es:70642.7491364116
+
+    \end{Verbatim}
+
+    Se compararon los tres modelos lineales con tres selecciones de
+variables distintas: 1) Features originales.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{1}
+\item
+  Features originales + nuevas features calculadas a partir de 4 de las
+  originales.
+\item
+  Una selección acotada de features originales y seleccionando sólo una
+  de los nuevos atributos.
+\end{enumerate}
+
+Observamos que los valores más pequeños de RMSE se obtuvieron para el
+data-set con los atributos originales (1). Comparando los valores de los
+RMSE obtenidos para los tres modelos, el mejor resultó ser LASSO para
+las tres selecciones de atributos que se utilizaron.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
