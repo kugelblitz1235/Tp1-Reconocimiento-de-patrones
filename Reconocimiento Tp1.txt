@@ -1,6 +1,0 @@
-Reconocimiento Tp1 
-	Dudas:
-		-En el set de test hay que rellenar datos faltantes??-> Julio
-		-significa una correlacion negativa un dependencia inversa?-> eve dijo si
-		-una vez que ya hicimos combinacion de features entre los que vimos que eran muy dependientes, las dejamos o las sacamos?
-		
